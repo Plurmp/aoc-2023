@@ -1,7 +1,7 @@
-use std::{collections::HashMap, fs::read_to_string};
 use regex::Regex;
+use std::{collections::HashMap, fs::read_to_string};
 
-const EX: &str = r#"467..114..
+const _EX: &str = r#"467..114..
 ...*......
 ..35..633.
 ......#...
@@ -18,19 +18,13 @@ pub fn solve() -> (String, String) {
         .expect("input not readable")
         .replace("\r\n", "\n");
     let line_len = input.lines().next().unwrap().len();
-    let input = ".".repeat(line_len) + "\n"
-        + &input
-        + &".".repeat(line_len);
+    let input = ".".repeat(line_len) + "\n" + &input + &".".repeat(line_len);
     let input: String = input
         .lines()
-        .map(|line| ".".to_string() + &line + ".\n")
+        .map(|line| ".".to_string() + line + ".\n")
         .collect();
     let line_len = input.lines().next().unwrap().len() + 1;
-    // let input: Vec<Vec<char>> = input
-    //     .lines()
-    //     .map(|line| line.chars().collect())
-    //     .collect();
-    
+
     let re_num = Regex::new(r"\d+").unwrap();
     let number_matches: Vec<_> = re_num
         .captures_iter(&input)
@@ -43,7 +37,7 @@ pub fn solve() -> (String, String) {
         let check_string = input[(a - 1 - line_len)..(b + 1 - line_len)].to_string()
             + &input[(a - 1)..(b + 1)]
             + &input[(a - 1 + line_len)..(b + 1 + line_len)];
-        if check_string.chars().any(|ch| is_special_character(ch)) {
+        if check_string.chars().any(is_special_character) {
             p1 += num.as_str().parse::<u32>().unwrap();
         }
     }
@@ -52,13 +46,15 @@ pub fn solve() -> (String, String) {
     for num in &number_matches {
         let a = num.start();
         let b = num.end();
-        
+
         for i in (a - 1 - line_len)..(b + 1 - line_len) {
             if input.chars().nth(i) == Some('*') {
                 let parsed_num = num.as_str().parse().unwrap();
                 star_matches
                     .entry(i)
-                    .and_modify(|v| { v.push(parsed_num); })
+                    .and_modify(|v| {
+                        v.push(parsed_num);
+                    })
                     .or_insert(vec![parsed_num]);
             }
         }
@@ -67,7 +63,9 @@ pub fn solve() -> (String, String) {
                 let parsed_num = num.as_str().parse().unwrap();
                 star_matches
                     .entry(i)
-                    .and_modify(|v| { v.push(parsed_num); })
+                    .and_modify(|v| {
+                        v.push(parsed_num);
+                    })
                     .or_insert(vec![parsed_num]);
             }
         }
@@ -76,7 +74,9 @@ pub fn solve() -> (String, String) {
                 let parsed_num = num.as_str().parse().unwrap();
                 star_matches
                     .entry(i)
-                    .and_modify(|v| { v.push(parsed_num); })
+                    .and_modify(|v| {
+                        v.push(parsed_num);
+                    })
                     .or_insert(vec![parsed_num]);
             }
         }

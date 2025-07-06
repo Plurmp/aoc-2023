@@ -1,6 +1,12 @@
 use std::{fs::read_to_string, ops::Add};
 
-use nom::{branch::alt, bytes::complete::tag, character::complete, multi::{separated_list0, separated_list1}, IResult, Parser};
+use nom::{
+    IResult, Parser,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete,
+    multi::{separated_list0, separated_list1},
+};
 
 #[derive(Debug)]
 struct Game {
@@ -53,10 +59,10 @@ pub fn solve() -> (String, String) {
         .map(|game| {
             game.cube_sets
                 .iter()
-                .fold(CubeSet::default(), |acc, n| CubeSet { 
-                    red: acc.red.max(n.red), 
-                    green: acc.green.max(n.green), 
-                    blue: acc.blue.max(n.blue) 
+                .fold(CubeSet::default(), |acc, n| CubeSet {
+                    red: acc.red.max(n.red),
+                    green: acc.green.max(n.green),
+                    blue: acc.blue.max(n.blue),
                 })
         })
         .map(|CubeSet { red, green, blue }| red * green * blue)
@@ -75,7 +81,13 @@ fn parse_game(input: &str) -> IResult<&str, Game> {
     let (input, _) = tag(": ")(input)?;
     let (input, cube_sets) = parse_cube_sets(input)?;
 
-    Ok((input, Game{ game_number, cube_sets }))
+    Ok((
+        input,
+        Game {
+            game_number,
+            cube_sets,
+        },
+    ))
 }
 
 fn parse_cube_sets(input: &str) -> IResult<&str, Vec<CubeSet>> {
@@ -83,10 +95,7 @@ fn parse_cube_sets(input: &str) -> IResult<&str, Vec<CubeSet>> {
 }
 
 fn parse_cube_set(input: &str) -> IResult<&str, CubeSet> {
-    let (input, cube_counts) = separated_list0(
-        tag(", "), 
-        parse_cube_count
-    ).parse(input)?;
+    let (input, cube_counts) = separated_list0(tag(", "), parse_cube_count).parse(input)?;
 
     let mut red = 0u32;
     let mut green = 0u32;
@@ -99,7 +108,7 @@ fn parse_cube_set(input: &str) -> IResult<&str, CubeSet> {
             Color::Blue => blue = count,
         }
     }
-    
+
     Ok((input, CubeSet { red, green, blue }))
 }
 
