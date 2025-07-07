@@ -14,7 +14,7 @@ const _EX: &str = r#"467..114..
 
 pub fn solve() -> (String, String) {
     // let input = EX.to_string();
-    let input = read_to_string("./src/days/day3/input.txt")
+    let input = read_to_string("inputs/input3.txt")
         .expect("input not readable")
         .replace("\r\n", "\n");
     let line_len = input.lines().next().unwrap().len();

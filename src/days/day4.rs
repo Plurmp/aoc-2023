@@ -1,8 +1,13 @@
-use std::{collections::{HashMap, HashSet}, fs::read_to_string, os::windows::process};
-
-use cached::{proc_macro::cached, SizedCache};
 use nom::{
-    bytes::complete::tag, character::complete::{self, digit1, line_ending, space1}, multi::separated_list1, sequence::separated_pair, IResult, Parser
+    IResult, Parser,
+    bytes::complete::tag,
+    character::complete::{self, line_ending, space1},
+    multi::separated_list1,
+    sequence::separated_pair,
+};
+use std::{
+    collections::{HashMap, HashSet},
+    fs::read_to_string,
 };
 
 #[derive(Debug)]
@@ -22,7 +27,7 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
 
 pub fn solve() -> (String, String) {
     // let input = _EX.to_string();
-    let input = read_to_string("src/days/day4/input.txt").expect("input not readable");
+    let input = read_to_string("inputs/input4.txt").expect("input not readable");
     let (_, cards) = parse_deck(&input).expect("parsing fail");
 
     let p1: u32 = cards
@@ -41,21 +46,15 @@ pub fn solve() -> (String, String) {
             card_counts[id + i] += card_counts[id];
         }
     }
-    
-    dbg!(&card_counts);
 
-    let p2: usize = card_counts
-        .iter()
-        .sum();
+    let p2: usize = card_counts.iter().sum();
 
     (p1.to_string(), p2.to_string())
 }
 
 fn parse_deck(input: &str) -> IResult<&str, LottoDeck> {
     let (_, ids_and_cards) = separated_list1(line_ending, parse_card).parse(input)?;
-    let deck: LottoDeck = ids_and_cards
-        .into_iter()
-        .collect();
+    let deck: LottoDeck = ids_and_cards.into_iter().collect();
 
     Ok((input, deck))
 }
@@ -70,15 +69,20 @@ fn parse_card(input: &str) -> IResult<&str, (usize, LottoCard)> {
         separated_list1(space1, complete::u32),
     )
     .parse(input)?;
-    
-    let winning_numbers: HashSet<_> = winning_numbers
-        .into_iter()
-        .collect();
-    let card_numbers: HashSet<_> = card_numbers
-        .into_iter()
-        .collect();
 
-    Ok((input, (card_id, LottoCard { winning_numbers, card_numbers })))
+    let winning_numbers: HashSet<_> = winning_numbers.into_iter().collect();
+    let card_numbers: HashSet<_> = card_numbers.into_iter().collect();
+
+    Ok((
+        input,
+        (
+            card_id,
+            LottoCard {
+                winning_numbers,
+                card_numbers,
+            },
+        ),
+    ))
 }
 
 fn process_card(id: usize, deck: &LottoDeck) -> usize {

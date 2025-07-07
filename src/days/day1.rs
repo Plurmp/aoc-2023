@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs::read_to_string;
 
 pub fn solve() -> (String, String) {
-    let input = read_to_string("./src/day1/input.txt").expect("input not readable");
+    let input = read_to_string("inputs/input1.txt").expect("input not readable");
 
     let p1: u32 = input
         .lines()

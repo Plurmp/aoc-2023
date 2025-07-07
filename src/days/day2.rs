@@ -41,7 +41,7 @@ enum Color {
 }
 
 pub fn solve() -> (String, String) {
-    let input = read_to_string("src/day2/input.txt").expect("input could not be read");
+    let input = read_to_string("inputs/input2.txt").expect("input could not be read");
 
     let (_, games) = parse_games(&input).expect("could not parse");
     let p1: u32 = games
