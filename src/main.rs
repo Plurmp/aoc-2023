@@ -1,7 +1,8 @@
 mod days;
-use days::{day1, day2, day3, day4, day5};
+use days::{day1, day2, day3, day4, day5, day6, day7};
 
 use std::env;
+
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -26,6 +27,8 @@ fn get_day_solver(day: u8) -> fn() -> (String, String) {
         3 => day3::solve,
         4 => day4::solve,
         5 => day5::solve,
+        6 => day6::solve,
+        7 => day7::solve,
         _ => unimplemented!(),
     }
 }

@@ -1,4 +1,4 @@
-use std::{collections::BTreeSet, fs::read_to_string, ops::Range};
+use std::{fs::read_to_string, ops::Range};
 
 use itertools::Itertools;
 use nom::{
@@ -161,12 +161,19 @@ pub fn solve() -> (String, String) {
     let mut ranges_to_add = RangeSet(vec![]);
     for map in maps {
         dbg!(&location_ranges);
-        for AlmanacEntry {dest_start, source_start, len} in map.entries {
+        for AlmanacEntry {
+            dest_start,
+            source_start,
+            len,
+        } in map.entries
+        {
             let mapping_difference = dest_start - source_start;
             let mapping_range = RangeSet(vec![source_start..(source_start + len)]);
             let range_diff = mapping_range.intersection(&location_ranges);
             for diff in &range_diff.0 {
-                ranges_to_add = ranges_to_add.union(&RangeSet(vec![(diff.start + mapping_difference)..(diff.end + mapping_difference)]))
+                ranges_to_add = ranges_to_add.union(&RangeSet(vec![
+                    (diff.start + mapping_difference)..(diff.end + mapping_difference),
+                ]))
             }
             location_ranges = location_ranges.difference(&range_diff);
         }
@@ -178,8 +185,6 @@ pub fn solve() -> (String, String) {
     dbg!(&location_ranges);
 
     let p2 = location_ranges.get_first().unwrap();
-
-    
 
     (p1.to_string(), p2.to_string())
 }
@@ -214,7 +219,7 @@ fn parse_entry(input: &str) -> IResult<&str, AlmanacEntry> {
     ))
 }
 
-fn process_seeds(seeds: &mut Vec<i64>, maps: &[AlmanacMap]) {
+fn process_seeds(seeds: &mut [i64], maps: &[AlmanacMap]) {
     for map in maps {
         for seed in seeds.iter_mut() {
             for entry in &map.entries {
