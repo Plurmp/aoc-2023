@@ -1,6 +1,4 @@
-use std::{collections::{HashMap, HashSet}, fs::read_to_string};
-
-use itertools::enumerate;
+use std::{collections::HashMap, fs::read_to_string};
 use nom::{bytes::complete::take, character::complete::{self, line_ending, space1}, multi::{count, separated_list1}, IResult, Parser};
 
 #[derive(Clone, Copy)]
