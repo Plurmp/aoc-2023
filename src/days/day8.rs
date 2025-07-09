@@ -137,7 +137,7 @@ fn gcf(a: u64, b: u64) -> u64 {
     gcf(b, a % b)
 }
 
-fn lcm(nums: &[u64]) -> u64{
+fn lcm(nums: &[u64]) -> u64 {
     if nums.len() == 1 {
         return nums[0];
     }

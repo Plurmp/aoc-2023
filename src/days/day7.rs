@@ -1,5 +1,10 @@
+use nom::{
+    IResult, Parser,
+    bytes::complete::take,
+    character::complete::{self, line_ending, space1},
+    multi::{count, separated_list1},
+};
 use std::{collections::HashMap, fs::read_to_string};
-use nom::{bytes::complete::take, character::complete::{self, line_ending, space1}, multi::{count, separated_list1}, IResult, Parser};
 
 #[derive(Clone, Copy)]
 struct Play {
@@ -28,27 +33,26 @@ QQQJA 483";
 pub fn solve() -> (String, String) {
     // let input = _EX.to_string();
     let input = read_to_string("inputs/input7.txt").expect("input could not be read");
-    
+
     let (_, plays) = parse_plays(&input).expect("epic parse fail");
     let mut plays_p1 = plays.clone();
-    plays_p1
-        .sort_by(|a, b| {
-            if a.hand_type == b.hand_type {
-                a.hand.cmp(&b.hand)
-            } else {
-                a.hand_type.cmp(&b.hand_type)
-            }
-        });
+    plays_p1.sort_by(|a, b| {
+        if a.hand_type == b.hand_type {
+            a.hand.cmp(&b.hand)
+        } else {
+            a.hand_type.cmp(&b.hand_type)
+        }
+    });
     let p1: u64 = plays_p1
         .iter()
         .enumerate()
-        .map(|(i, Play { bid, ..})| (i + 1) as u64 * bid)
+        .map(|(i, Play { bid, .. })| (i + 1) as u64 * bid)
         .sum();
 
     let mut plays_p2: Vec<_> = plays
         .clone()
         .iter()
-        .map(|&Play { hand, bid, ..}| {
+        .map(|&Play { hand, bid, .. }| {
             let hand = hand.map(|card| if card == 11 { 0 } else { card });
             let hand_type = get_hand_type(&hand);
             Play {
@@ -58,18 +62,17 @@ pub fn solve() -> (String, String) {
             }
         })
         .collect();
-    plays_p2
-        .sort_by(|a, b| {
-            if a.hand_type == b.hand_type {
-                a.hand.cmp(&b.hand)
-            } else {
-                a.hand_type.cmp(&b.hand_type)
-            }
-        });
+    plays_p2.sort_by(|a, b| {
+        if a.hand_type == b.hand_type {
+            a.hand.cmp(&b.hand)
+        } else {
+            a.hand_type.cmp(&b.hand_type)
+        }
+    });
     let p2: u64 = plays_p2
         .iter()
         .enumerate()
-        .map(|(i, Play { bid, ..})| (i + 1) as u64 * bid)
+        .map(|(i, Play { bid, .. })| (i + 1) as u64 * bid)
         .sum();
 
     (p1.to_string(), p2.to_string())
@@ -87,36 +90,44 @@ fn parse_play(input: &str) -> IResult<&str, Play> {
     let hand: [u8; 5] = hand
         .into_iter()
         .take(5)
-        .map(|s| {
-            match s {
-                "2" => 2u8,
-                "3" => 3,
-                "4" => 4,
-                "5" => 5,
-                "6" => 6,
-                "7" => 7,
-                "8" => 8,
-                "9" => 9,
-                "T" => 10,
-                "J" => 11,
-                "Q" => 12,
-                "K" => 13,
-                "A" => 14,
-                _ => unreachable!(),
-            }
+        .map(|s| match s {
+            "2" => 2u8,
+            "3" => 3,
+            "4" => 4,
+            "5" => 5,
+            "6" => 6,
+            "7" => 7,
+            "8" => 8,
+            "9" => 9,
+            "T" => 10,
+            "J" => 11,
+            "Q" => 12,
+            "K" => 13,
+            "A" => 14,
+            _ => unreachable!(),
         })
         .collect::<Vec<_>>()
         .try_into()
         .unwrap();
     let hand_type = get_hand_type(&hand);
 
-    Ok((input, Play { hand, bid, hand_type }))
+    Ok((
+        input,
+        Play {
+            hand,
+            bid,
+            hand_type,
+        },
+    ))
 }
 
 fn get_hand_type(hand: &[u8; 5]) -> HandType {
     let mut card_counts = HashMap::new();
     for card in hand {
-        card_counts.entry(*card).and_modify(|count| *count += 1).or_insert(1u8);
+        card_counts
+            .entry(*card)
+            .and_modify(|count| *count += 1)
+            .or_insert(1u8);
     }
 
     let joker_count = card_counts.remove(&0).unwrap_or(0);

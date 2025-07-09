@@ -37,7 +37,9 @@ pub fn solve() -> (String, String) {
 
     let (time_p2, distance_p2) = races
         .iter()
-        .fold(("".to_string(), "".to_string()), |acc, n| (acc.0 + &n.time.to_string(), acc.1 + &n.distance.to_string()));
+        .fold(("".to_string(), "".to_string()), |acc, n| {
+            (acc.0 + &n.time.to_string(), acc.1 + &n.distance.to_string())
+        });
 
     let time_p2: u64 = time_p2.parse().unwrap();
     let distance_p2: u64 = distance_p2.parse().unwrap();
@@ -45,7 +47,7 @@ pub fn solve() -> (String, String) {
     let first_win = (0..time_p2)
         .find(|i| i * (time_p2 - i) > distance_p2)
         .unwrap();
-    let p2 = time_p2 - (first_win * 2) + 1; 
+    let p2 = time_p2 - (first_win * 2) + 1;
 
     (p1.to_string(), p2.to_string())
 }
