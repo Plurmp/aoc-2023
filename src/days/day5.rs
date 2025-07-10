@@ -159,7 +159,7 @@ pub fn solve() -> (String, String) {
 
     let mut location_ranges = RangeSet(merge_range_sets(vec![], seeds_p2));
     let mut ranges_to_add = RangeSet(vec![]);
-    
+
     #[allow(clippy::single_range_in_vec_init)]
     for map in maps {
         dbg!(&location_ranges);
