@@ -1,6 +1,13 @@
 use std::{collections::HashMap, fs::read_to_string};
 
-use nom::{branch::alt, bytes::complete::tag, character::complete::{self, line_ending, space1}, multi::{many1, separated_list1}, sequence::separated_pair, IResult, Parser};
+use nom::{
+    IResult, Parser,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::{self, line_ending, space1},
+    multi::{many1, separated_list1},
+    sequence::separated_pair,
+};
 
 #[derive(Debug)]
 struct Row {
@@ -12,7 +19,7 @@ struct Row {
 enum Condition {
     Operational,
     Damaged,
-    Unknown
+    Unknown,
 }
 
 const _EX: &str = "???.### 1,1,3
@@ -33,14 +40,12 @@ pub fn solve() -> (String, String) {
         .map(|row| solve_row(&row.springs, &row.groups, &mut HashMap::new()))
         .sum();
 
-    let rows_p2 = rows
-        .iter()
-        .map(|row| {
-            let springs = vec![row.springs.clone(); 5].join(&Condition::Unknown);
-            let groups = row.groups.repeat(5);
+    let rows_p2 = rows.iter().map(|row| {
+        let springs = vec![row.springs.clone(); 5].join(&Condition::Unknown);
+        let groups = row.groups.repeat(5);
 
-            Row { springs, groups }
-        });
+        Row { springs, groups }
+    });
 
     let p2: usize = rows_p2
         .map(|row| solve_row(&row.springs, &row.groups, &mut HashMap::new()))
@@ -49,7 +54,11 @@ pub fn solve() -> (String, String) {
     (p1.to_string(), p2.to_string())
 }
 
-fn solve_row<'a>(springs: &'a [Condition], groups: &'a [usize], dp: &mut HashMap<(&'a [Condition], &'a [usize]), usize>) -> usize {
+fn solve_row<'a>(
+    springs: &'a [Condition],
+    groups: &'a [usize],
+    dp: &mut HashMap<(&'a [Condition], &'a [usize]), usize>,
+) -> usize {
     if groups.is_empty() {
         if !springs.contains(&Condition::Damaged) {
             return 1;
@@ -75,8 +84,10 @@ fn solve_row<'a>(springs: &'a [Condition], groups: &'a [usize], dp: &mut HashMap
     let all_springs_valid = springs[0..current_group]
         .iter()
         .all(|spring| *spring != Condition::Operational);
-    let last_spring_valid = springs.len() == current_group || 
-        springs[current_group..(current_group + 1)].iter().all(|spring| *spring != Condition::Damaged);
+    let last_spring_valid = springs.len() == current_group
+        || springs[current_group..(current_group + 1)]
+            .iter()
+            .all(|spring| *spring != Condition::Damaged);
     let mut total = 0usize;
     if all_springs_valid && last_spring_valid {
         let max_idx = springs.len().min(current_group + 1);
@@ -96,7 +107,8 @@ fn parse_rows(input: &str) -> IResult<&str, Vec<Row>> {
 }
 
 fn parse_row(input: &str) -> IResult<&str, Row> {
-    let (input, (springs, groups)) = separated_pair(parse_springs, space1, parse_groups).parse(input)?;
+    let (input, (springs, groups)) =
+        separated_pair(parse_springs, space1, parse_groups).parse(input)?;
 
     Ok((input, Row { springs, groups }))
 }

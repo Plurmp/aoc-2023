@@ -32,7 +32,7 @@ pub fn solve() -> (String, String) {
         .lines()
         .map(|line| {
             let mut digits: Vec<String> = vec![];
-            for (i, ch) in line.chars().enumerate() {
+            for (i, ch) in line.char_indices() {
                 if ch.is_ascii_digit() {
                     digits.push(ch.to_string());
                 } else {

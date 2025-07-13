@@ -1,6 +1,6 @@
 use std::fs::read_to_string;
 
-use glam::{u64vec2, uvec2, U64Vec2};
+use glam::{U64Vec2, u64vec2, uvec2};
 use itertools::Itertools;
 
 const _EX: &str = "...#......
@@ -20,7 +20,7 @@ pub fn solve() -> (String, String) {
 
     let mut grid: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
     let mut row_index = 0usize;
-    let mut width = grid.iter().next().unwrap().len();
+    let mut width = grid.first().unwrap().len();
     let mut row_spaces = vec![];
     let mut unscaled_row_index = 0usize;
     while row_index < width {
@@ -84,10 +84,7 @@ pub fn solve() -> (String, String) {
             })
         })
         .collect();
-    let mut old_and_new_pos: Vec<_> = positions
-        .into_iter()
-        .map(|pos| (pos, pos))
-        .collect();
+    let mut old_and_new_pos: Vec<_> = positions.into_iter().map(|pos| (pos, pos)).collect();
     for space_x in &row_spaces {
         for (old, new) in &mut old_and_new_pos {
             if old.x > *space_x as u64 {
