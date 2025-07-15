@@ -1,5 +1,7 @@
 mod days;
-use days::{day1, day2, day3, day4, day5, day6, day7, day8, day9, day10, day11, day12, day13};
+use days::{
+    day1, day2, day3, day4, day5, day6, day7, day8, day9, day10, day11, day12, day13, day14, day15,
+};
 
 use std::env;
 
@@ -15,8 +17,8 @@ fn main() {
 
     let (p1, p2) = func();
 
-    println!("Solution 1: {}", p1);
-    println!("Solution 2: {}", p2);
+    println!("Solution 1: {p1}");
+    println!("Solution 2: {p2}");
 }
 
 fn get_day_solver(day: u8) -> fn() -> (String, String) {
@@ -34,6 +36,8 @@ fn get_day_solver(day: u8) -> fn() -> (String, String) {
         11 => day11::solve,
         12 => day12::solve,
         13 => day13::solve,
+        14 => day14::solve,
+        15 => day15::solve,
         _ => unimplemented!(),
     }
 }
